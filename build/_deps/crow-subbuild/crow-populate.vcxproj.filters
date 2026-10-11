@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\99aa5f87080974f928f11935e673af9e\crow-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\99aa5f87080974f928f11935e673af9e\crow-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\99aa5f87080974f928f11935e673af9e\crow-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\99aa5f87080974f928f11935e673af9e\crow-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\99aa5f87080974f928f11935e673af9e\crow-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\99aa5f87080974f928f11935e673af9e\crow-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\99aa5f87080974f928f11935e673af9e\crow-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\99aa5f87080974f928f11935e673af9e\crow-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\14bf6fe8e9f19d921a8bb75f9e5e2395\crow-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\f8428027217883a6cd209332fa64a95a\crow-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\crow-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{E8DB9D79-B00F-3738-91A7-A85290DAC7D6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

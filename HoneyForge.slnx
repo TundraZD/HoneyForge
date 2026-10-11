@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="HoneyForge.vcxproj" Id="b800febe-c5fc-454e-b989-42e8b8d109c0" />
+</Solution>

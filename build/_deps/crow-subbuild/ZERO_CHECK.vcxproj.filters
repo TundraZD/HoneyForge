@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Пользователь\Desktop\HoneyForge\build\_deps\crow-subbuild\CMakeFiles\f8428027217883a6cd209332fa64a95a\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{E8DB9D79-B00F-3738-91A7-A85290DAC7D6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

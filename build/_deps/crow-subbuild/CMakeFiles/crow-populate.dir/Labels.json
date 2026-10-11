@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/crow-populate"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/f8428027217883a6cd209332fa64a95a/crow-populate.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/14bf6fe8e9f19d921a8bb75f9e5e2395/crow-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/99aa5f87080974f928f11935e673af9e/crow-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/99aa5f87080974f928f11935e673af9e/crow-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/99aa5f87080974f928f11935e673af9e/crow-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/99aa5f87080974f928f11935e673af9e/crow-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/99aa5f87080974f928f11935e673af9e/crow-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/99aa5f87080974f928f11935e673af9e/crow-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/99aa5f87080974f928f11935e673af9e/crow-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/crow-subbuild/CMakeFiles/99aa5f87080974f928f11935e673af9e/crow-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"crow-populate"
+		],
+		"name" : "crow-populate"
+	}
+}

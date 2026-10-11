@@ -1,0 +1,12 @@
+C:/Users/Пользователь/Desktop/HoneyForge/build/CMakeFiles/honeypot-backend.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/CMakeFiles/PACKAGE.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/CMakeFiles/INSTALL.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/_deps/crow-build/CMakeFiles/uninstall.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/_deps/crow-build/CMakeFiles/PACKAGE.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/_deps/crow-build/CMakeFiles/INSTALL.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/_deps/crow-build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/_deps/json-build/CMakeFiles/PACKAGE.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/_deps/json-build/CMakeFiles/INSTALL.dir
+C:/Users/Пользователь/Desktop/HoneyForge/build/_deps/json-build/CMakeFiles/ALL_BUILD.dir

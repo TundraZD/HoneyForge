@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/json-populate"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/bb885c392ea56a007f4e2e6c751309ac/json-populate.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/19d10e3612ed2dc8f00035d3a735d747/json-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/02afe47d25cdf1ece9622e30737ed74c/json-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/02afe47d25cdf1ece9622e30737ed74c/json-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/02afe47d25cdf1ece9622e30737ed74c/json-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/02afe47d25cdf1ece9622e30737ed74c/json-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/02afe47d25cdf1ece9622e30737ed74c/json-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/02afe47d25cdf1ece9622e30737ed74c/json-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/02afe47d25cdf1ece9622e30737ed74c/json-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/\u041f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044c/Desktop/HoneyForge/build/_deps/json-subbuild/CMakeFiles/02afe47d25cdf1ece9622e30737ed74c/json-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"json-populate"
+		],
+		"name" : "json-populate"
+	}
+}
