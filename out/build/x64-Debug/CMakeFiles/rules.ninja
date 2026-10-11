@@ -47,7 +47,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = "C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" --regenerate-during-build -SC:\Users\Пользователь\source\repos\HoneyForge -BC:\Users\Пользователь\source\repos\HoneyForge\out\build\x64-Debug
+  command = "C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" --regenerate-during-build -SC:\Users\Пользователь\source\repos\TundraZD\HoneyForge -BC:\Users\Пользователь\source\repos\TundraZD\HoneyForge\out\build\x64-Debug
   description = Re-running CMake...
   generator = 1
 
