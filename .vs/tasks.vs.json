@@ -1,0 +1,15 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "задача-Profile_crud",
+      "appliesTo": "src/controllers/Profile_crud.cpp",
+      "type": "launch"
+    },
+    {
+      "taskLabel": "задача-Profile_crud",
+      "appliesTo": "src/controllers/Profile_crud.cpp",
+      "type": "launch"
+    }
+  ]
+}
