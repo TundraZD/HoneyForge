@@ -1,147 +1,148 @@
-# HoneyForge
+# 🍯 HoneyForge
 
-**A modular honeypot platform for capturing, structuring, and forwarding suspicious network activity.**
+**Модульная платформа honeypot для перехвата, структурирования и пересылки подозрительной сетевой активности.**
 
-HoneyForge is a security research project that combines lightweight network decoys, configurable trap profiles, structured event logging, and an event-forwarding agent. It also includes a C++ backend codebase for managing honeypot-related entities.
+HoneyForge — исследовательский проект в области безопасности. Он объединяет лёгкие сетевые приманки, настраиваемые профили ловушек, структурированное логирование событий и агент пересылки событий. В репозитории также есть backend-код на C++ для управления сущностями honeypot.
 
-The goal is to make suspicious interactions observable in a controlled environment and provide a foundation for centralized event collection and analysis.
+Цель проекта — сделать подозрительные взаимодействия наблюдаемыми в контролируемой среде и заложить основу для централизованного сбора и анализа событий.
 
-> **Project status:** The TCP and HTTP traps, profile validator, and Python Event Agent are implemented. The Event Agent has been tested against a local mock API, including retry behavior after simulated HTTP 503 responses. Integration with the production backend is not yet confirmed.
+> 📌 **Статус проекта:** реализованы TCP- и HTTP-ловушки, валидатор профилей и Event Agent на Python. Event Agent проверен на локальном mock API, включая повторные попытки после имитированных ответов HTTP 503. Интеграция с боевым backend пока не подтверждена.
 
 ---
 
-## Contents
+## 📑 Содержание
 
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Features](#features)
-- [Repository structure](#repository-structure)
-- [Requirements](#requirements)
-- [Quick start](#quick-start)
-- [Running the traps](#running-the-traps)
-- [Testing the Event Agent](#testing-the-event-agent)
-- [Event format](#event-format)
-- [Security considerations](#security-considerations)
-- [C++ backend dependencies](#c-backend-dependencies)
-- [Troubleshooting](#troubleshooting)
-- [Current limitations](#current-limitations)
-- [Roadmap](#roadmap)
+- [📖 Обзор](#-обзор)
+- [🧩 Архитектура](#-архитектура)
+- [✨ Возможности](#-возможности)
+- [📁 Структура репозитория](#-структура-репозитория)
+- [📋 Требования](#-требования)
+- [🚀 Быстрый старт](#-быстрый-старт)
+- [🧪 Тестирование Event Agent](#-тестирование-event-agent)
+- [📨 Формат событий](#-формат-событий)
+- [🔒 Безопасность](#-безопасность)
+- [🔧 Зависимости C++ backend](#-зависимости-c-backend)
+- [🩺 Устранение неполадок](#-устранение-неполадок)
+- [🚧 Текущие ограничения](#-текущие-ограничения)
+- [🎯 Дорожная карта](#-дорожная-карта)
+- [🤝 Участие в проекте](#-участие-в-проекте)
+- [📄 Лицензия](#-лицензия)
 
-## Overview
+## 📖 Обзор
 
-A honeypot is a decoy service designed to attract and observe interactions that may be associated with scanning, automated probing, or other suspicious activity.
+Honeypot — это сервис-приманка, который привлекает и позволяет наблюдать взаимодействия, связанные со сканированием, автоматическим зондированием и другой подозрительной активностью.
 
-HoneyForge currently includes two network-facing decoys:
+Сейчас в HoneyForge входят две сетевые приманки и вспомогательные компоненты:
 
-| Component | Default port | Purpose |
+| Компонент | Порт по умолчанию | Назначение |
 |---|---:|---|
-| TCP Low | `2222/tcp` | Accepts TCP connections and presents an SSH-like banner |
-| HTTP Decoy | `8080/tcp` | Responds to HTTP requests and records request metadata |
-| Event Agent | Local process | Collects container logs, persists events, and forwards them to an API |
-| Mock API | `127.0.0.1:8099` | Provides a local endpoint for testing event delivery and retry behavior |
-| Profile Validator | CLI | Checks trap profile configuration files |
+| 🔌 TCP Low | `2222/tcp` | Принимает TCP-соединения и показывает SSH-подобный баннер |
+| 🌐 HTTP Decoy | `8080/tcp` | Отвечает на HTTP-запросы и записывает метаданные запросов |
+| 🤖 Event Agent | локальный процесс | Собирает логи контейнеров, сохраняет события и пересылает их в API |
+| 🧪 Mock API | `127.0.0.1:8099` | Локальная точка для проверки доставки событий и повторных попыток |
+| ✅ Profile Validator | CLI | Проверяет конфигурационные файлы профилей ловушек |
 
-The traps are intended for controlled testing and defensive security research. They are not full implementations of SSH or Apache HTTP Server.
+Ловушки предназначены для контролируемого тестирования и оборонительных исследований в области безопасности. Это не полноценные реализации SSH или веб-сервера Apache.
 
-## Architecture
+## 🧩 Архитектура
 
 ```mermaid
 flowchart TD
-    A["TCP Low Trap<br/>Port 2222"] --> D["Docker container logs"]
-    B["HTTP Decoy Trap<br/>Port 8080"] --> D
+    A["TCP Low Trap<br/>Порт 2222"] --> D["Логи Docker-контейнеров"]
+    B["HTTP Decoy Trap<br/>Порт 8080"] --> D
     D --> E["Event Agent"]
-    E --> F[("SQLite queue")]
+    E --> F[("Очередь SQLite")]
     F --> G["HTTP Event API"]
     G --> H["Backend"]
-    I["Mock API<br/>Local testing"] -. "Test endpoint" .-> E
+    I["Mock API<br/>Локальное тестирование"] -. "Тестовая точка" .-> E
 ```
 
-### Event processing flow
+### 🔄 Обработка событий
 
-1. A client connects to a trap or sends an HTTP request.
-2. The trap records structured event data in its container logs.
-3. The Event Agent polls Docker logs and extracts valid events.
-4. Events are normalized and stored in a local SQLite queue with a generated event ID.
-5. The agent sends queued events to the configured API.
-6. Temporary delivery failures trigger retries with exponential backoff.
-7. Invalid or unsupported events can be moved to a dead-letter log for inspection.
+1. Клиент подключается к ловушке или отправляет HTTP-запрос.
+2. Ловушка записывает структурированные данные события в логи своего контейнера.
+3. Event Agent читает логи Docker и выделяет из них корректные события.
+4. События нормализуются и сохраняются в локальную очередь SQLite с сгенерированным идентификатором события.
+5. Агент отправляет события из очереди в настроенный API.
+6. При временных сбоях доставки выполняются повторные попытки с экспоненциальной задержкой.
+7. Некорректные или неподдерживаемые события можно перенести в dead-letter-журнал для разбора.
 
-The local mock API is intended for development and testing. It is not the production backend.
+Локальный mock API нужен для разработки и тестирования. Это не боевой backend.
 
-## Features
+## ✨ Возможности
 
-### TCP Low
+### 🔌 TCP Low
 
-- Listens on TCP port `2222` by default.
-- Sends an SSH-like identification banner.
-- Records connection lifecycle events, including connection open, received byte count, timeout, error, and connection close where applicable.
-- Records metadata rather than the full contents of received data.
+- По умолчанию слушает TCP-порт `2222`.
+- Отправляет SSH-подобный идентификационный баннер.
+- Записывает события жизненного цикла соединения: открытие, число принятых байт, таймаут, ошибка и закрытие (где применимо).
+- Сохраняет метаданные, а не полное содержимое полученных данных.
 
-### HTTP Decoy
+### 🌐 HTTP Decoy
 
-- Listens on port `8080` by default.
-- Responds to HTTP requests.
-- Records request metadata such as method, path, source IP, destination port, status code, and body size.
-- Includes indicators for selected suspicious request patterns.
-- Does not intentionally store complete HTTP request bodies or header values in its event payload.
+- По умолчанию слушает порт `8080`.
+- Отвечает на HTTP-запросы.
+- Записывает метаданные запроса: метод, путь, IP-адрес источника, порт назначения, код ответа и размер тела.
+- Содержит индикаторы для отдельных подозрительных шаблонов запросов.
+- Намеренно не сохраняет в событии тело запроса целиком и значения заголовков.
 
-### Event Agent
+### 🤖 Event Agent
 
-- Collects events from Docker container logs.
-- Uses SQLite to persist collection state and outgoing events.
-- Generates an event ID before delivery so retries can reuse the same ID.
-- Retries temporary failures, including HTTP 429 and server errors.
-- Supports a dead-letter JSON Lines file for events that cannot be delivered permanently.
-- Can be tested against the local mock API without a production backend.
+- Собирает события из логов Docker-контейнеров.
+- Использует SQLite для хранения состояния сбора и исходящих событий.
+- Генерирует идентификатор события до отправки, поэтому при повторах используется тот же ID.
+- Повторяет отправку при временных сбоях, включая HTTP 429 и ошибки сервера.
+- Ведёт dead-letter-файл в формате JSON Lines для событий, которые невозможно доставить.
+- Можно проверять на локальном mock API без боевого backend.
 
-### Container hardening
+### 🛡️ Укрепление контейнеров
 
-The trap Compose configurations include security-oriented settings such as a read-only root filesystem, dropped Linux capabilities, `no-new-privileges`, memory limits, and PID limits. Review the actual Compose files before deploying because effective security also depends on the host, Docker configuration, and network exposure.
+В Compose-конфигурациях ловушек используются настройки безопасности: корневая файловая система только для чтения, сброс Linux capabilities, `no-new-privileges`, ограничения памяти и числа процессов. Перед развёртыванием проверьте реальные Compose-файлы: итоговая защищённость зависит также от хоста, настроек Docker и сетевой доступности.
 
-## Repository structure
+## 📁 Структура репозитория
 
 ```text
 HoneyForge/
-├── src/                         # C++ backend source code
-│   ├── controllers/              # CRUD and database controllers
-│   └── models/                   # Backend data models
+├── src/                         # Исходный код C++ backend
+│   ├── controllers/              # CRUD и контроллеры базы данных
+│   └── models/                   # Модели данных backend
 ├── traps/
 │   ├── tcp-low/
-│   │   ├── trap.py               # TCP decoy
-│   │   ├── tcp-basic.yaml        # TCP trap configuration
+│   │   ├── trap.py               # TCP-приманка
+│   │   ├── tcp-basic.yaml        # Конфигурация TCP-ловушки
 │   │   ├── Dockerfile
 │   │   └── compose.yaml
 │   └── http-decoy/
-│       ├── trap.py               # HTTP decoy
+│       ├── trap.py               # HTTP-приманка
 │       ├── Dockerfile
 │       └── compose.yaml
 ├── profiles/
-│   ├── tcp-basic.yaml            # TCP profile
-│   └── http-basic.yaml           # HTTP profile
+│   ├── tcp-basic.yaml            # TCP-профиль
+│   └── http-basic.yaml           # HTTP-профиль
 ├── profile-loader/
-│   └── validate_profile.py      # Profile validation CLI
+│   └── validate_profile.py      # CLI проверки профилей
 ├── event-agent/
-│   ├── agent.py                  # Log collection and event delivery
-│   └── mock_api.py               # Local API test server
-├── CMakeLists.txt                # C++ build configuration
+│   ├── agent.py                  # Сбор логов и доставка событий
+│   └── mock_api.py               # Локальный тестовый API-сервер
+├── CMakeLists.txt                # Конфигурация сборки C++
 ├── README.md
 └── .gitignore
 ```
 
-Runtime data, including the SQLite database and dead-letter files, is local state and should not be committed to the repository.
+Данные времени выполнения, включая базу SQLite и dead-letter-файлы, — это локальное состояние. Их не нужно коммитить в репозиторий.
 
-## Requirements
+## 📋 Требования
 
-For the trap and Event Agent components:
+Для ловушек и Event Agent:
 
-- Linux environment such as Debian
-- Docker Engine and Docker Compose plugin
-- Python 3.11 or newer recommended
-- Python virtual environment support
-- `curl` for HTTP testing
-- `nc` (netcat) for TCP testing
+- Linux-окружение, например Debian
+- Docker Engine и плагин Docker Compose
+- Python 3.11 или новее (рекомендуется)
+- Поддержка виртуальных окружений Python
+- `curl` для HTTP-тестов
+- `nc` (netcat) для TCP-тестов
 
-For profile validation, install PyYAML in a virtual environment if it is not already available:
+Для проверки профилей установите PyYAML в виртуальное окружение, если он ещё не доступен:
 
 ```bash
 cd /path/to/HoneyForge
@@ -150,96 +151,96 @@ python3 -m venv .venv
 python -m pip install PyYAML
 ```
 
-The Event Agent and mock API use Python standard-library modules for their core functionality. Docker must be installed and accessible to the account running the agent.
+Основная функциональность Event Agent и mock API использует только стандартную библиотеку Python. Docker должен быть установлен и доступен пользователю, от имени которого запускается агент.
 
-## Quick start
+## 🚀 Быстрый старт
 
-### 1. Get the repository
+### 1️⃣ Получите репозиторий
 
 ```bash
 git clone https://github.com/TundraZD/HoneyForge.git
 cd HoneyForge
 ```
 
-To work on the Event Agent changes before they are merged into `main`, check out the feature branch:
+Чтобы поработать с изменениями Event Agent до их слияния в `main`, переключитесь на ветку с функциональностью:
 
 ```bash
 git fetch origin
 git switch --track origin/feature/honeypot-event-agent
 ```
 
-If the branch has already been merged or removed, use the current default branch instead.
+Если ветка уже влита или удалена, используйте текущую ветку по умолчанию.
 
-### 2. Validate the profiles
+### 2️⃣ Проверьте профили
 
-Activate your virtual environment and install PyYAML as described above. Then run:
+Активируйте виртуальное окружение и установите PyYAML, как описано выше. Затем выполните:
 
 ```bash
 python profile-loader/validate_profile.py profiles/tcp-basic.yaml
 python profile-loader/validate_profile.py profiles/http-basic.yaml
 ```
 
-Check the validator's help output if your local version expects a different argument format:
+Если ваша версия валидатора ожидает другой формат аргументов, посмотрите справку:
 
 ```bash
 python profile-loader/validate_profile.py --help
 ```
 
-### 3. Start the traps
+### 3️⃣ Запустите ловушки
 
-Build and start the TCP trap:
+Соберите и запустите TCP-ловушку:
 
 ```bash
 docker compose -f traps/tcp-low/compose.yaml up --build -d
 ```
 
-Build and start the HTTP trap:
+Соберите и запустите HTTP-ловушку:
 
 ```bash
 docker compose -f traps/http-decoy/compose.yaml up --build -d
 ```
 
-Check container status and published ports:
+Проверьте состояние контейнеров и опубликованные порты:
 
 ```bash
 docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
 ```
 
-### 4. Test the HTTP decoy
+### 4️⃣ Проверьте HTTP-приманку
 
 ```bash
 curl -i http://127.0.0.1:8080/
 ```
 
-A successful request should return an HTTP response. Inspect the container logs:
+Успешный запрос должен вернуть HTTP-ответ. Посмотрите логи контейнера:
 
 ```bash
 docker logs --since 2m --timestamps honeyforge-http-001
 ```
 
-The Compose configuration determines the actual container name. If the name differs, find it with `docker ps`.
+Фактическое имя контейнера задаётся в Compose-конфигурации. Если оно отличается, найдите его командой `docker ps`.
 
-### 5. Test the TCP decoy
+### 5️⃣ Проверьте TCP-приманку
 
 ```bash
 printf 'test\n' | nc -w 2 127.0.0.1 2222
 ```
 
-The TCP trap should return its SSH-like banner. Inspect its logs:
+TCP-ловушка должна вернуть SSH-подобный баннер. Посмотрите её логи:
 
 ```bash
 docker logs --since 2m --timestamps trap-001
 ```
 
-If the container has a different name, use the name shown by `docker ps`.
+Если у контейнера другое имя, используйте имя из вывода `docker ps`.
 
-## Testing the Event Agent
+## 🧪 Тестирование Event Agent
 
-The mock API allows the delivery pipeline to be tested without connecting to a production service.
+Mock API позволяет проверить конвейер доставки без подключения к боевому сервису.
 
-### 1. Start the mock API
+### 1️⃣ Запустите mock API
 
-From the repository root, activate the Python environment if you use one. Start the mock server with two simulated initial failures:
+Из корня репозитория активируйте окружение Python, если вы его используете. Запустите mock-сервер с двумя имитированными начальными сбоями:
 
 ```bash
 python event-agent/mock_api.py --fail-first 2 \
@@ -247,9 +248,9 @@ python event-agent/mock_api.py --fail-first 2 \
 echo $! > /tmp/hf-mock.pid
 ```
 
-The mock server is expected to listen on `127.0.0.1:8099` and use the test key `test-key` in the current development configuration. Check the script's help or source if its arguments differ.
+Mock-сервер должен слушать `127.0.0.1:8099` и в текущей конфигурации разработки использует тестовый ключ `test-key`. Если аргументы отличаются, посмотрите справку или исходный код скрипта.
 
-### 2. Start the Event Agent
+### 2️⃣ Запустите Event Agent
 
 ```bash
 HONEYFORGE_API_URL=http://127.0.0.1:8099/api/v1/events \
@@ -259,32 +260,32 @@ python event-agent/agent.py \
 echo $! > /tmp/hf-agent.pid
 ```
 
-Use the environment variable names supported by the version of the agent you are running. The example key is for local testing only.
+Используйте имена переменных окружения, которые поддерживает запускаемая версия агента. Ключ из примера предназначен только для локального тестирования.
 
-### 3. Generate events
+### 3️⃣ Сгенерируйте события
 
-In another terminal, send a request to the HTTP trap:
+В другом терминале отправьте запрос к HTTP-ловушке:
 
 ```bash
 curl -i http://127.0.0.1:8080/
 ```
 
-You can also connect to the TCP trap:
+Можно также подключиться к TCP-ловушке:
 
 ```bash
 printf 'test\n' | nc -w 2 127.0.0.1 2222
 ```
 
-### 4. Inspect agent and mock logs
+### 4️⃣ Посмотрите логи агента и mock API
 
 ```bash
 tail -n 30 /tmp/hf-agent.log
 tail -n 30 /tmp/hf-mock.log
 ```
 
-With `--fail-first 2`, the mock API simulates two HTTP 503 responses before accepting a request. The agent should retry and eventually deliver the event when the API becomes available.
+С параметром `--fail-first 2` mock API дважды имитирует ответ HTTP 503, прежде чем принять запрос. Агент должен повторить отправку и в итоге доставить событие, когда API станет доступен.
 
-### 5. Inspect the SQLite queue
+### 5️⃣ Посмотрите очередь SQLite
 
 ```bash
 python - <<'PY'
@@ -311,25 +312,25 @@ db.close()
 PY
 ```
 
-Typical statuses include queued, sent, and dead-lettered states, depending on the agent version. Use the actual values returned by the database rather than assuming a particular state is present.
+Типичные статусы — «в очереди», «отправлено» и «в dead-letter», в зависимости от версии агента. Ориентируйтесь на фактические значения из базы данных и не рассчитывайте на наличие какого-то конкретного статуса.
 
-### 6. Stop the test processes
+### 6️⃣ Остановите тестовые процессы
 
 ```bash
 [ -f /tmp/hf-agent.pid ] && kill "$(cat /tmp/hf-agent.pid)" 2>/dev/null || true
 [ -f /tmp/hf-mock.pid ] && kill "$(cat /tmp/hf-mock.pid)" 2>/dev/null || true
 ```
 
-Stop the traps when you no longer need them:
+Когда ловушки больше не нужны, остановите их:
 
 ```bash
 docker compose -f traps/http-decoy/compose.yaml down
 docker compose -f traps/tcp-low/compose.yaml down
 ```
 
-## Event format
+## 📨 Формат событий
 
-Trap logs use structured JSON. A representative HTTP event looks like this:
+Логи ловушек используют структурированный JSON. Пример типичного HTTP-события:
 
 ```json
 {
@@ -352,7 +353,7 @@ Trap logs use structured JSON. A representative HTTP event looks like this:
 }
 ```
 
-The Event Agent wraps collected events in the backend event envelope. The expected API contract is:
+Event Agent оборачивает собранные события в конверт для backend. Ожидаемый контракт API:
 
 ```http
 POST /api/v1/events
@@ -360,7 +361,7 @@ Content-Type: application/json
 X-API-Key: <API_KEY>
 ```
 
-Example envelope:
+Пример конверта:
 
 ```json
 {
@@ -375,42 +376,42 @@ Example envelope:
 }
 ```
 
-Important fields:
+Основные поля:
 
-| Field | Description |
+| Поле | Описание |
 |---|---|
-| `event_id` | Unique event identifier reused across retries |
-| `trap_ref` | String identifier that associates the event with a configured trap |
-| `source_ip` | Address of the client that interacted with the trap |
-| `timestamp` | Event timestamp in UTC |
-| `event_type` | Type of interaction recorded |
-| `dest_port` | Destination port observed by the trap |
-| `protocol` | Transport or application protocol label |
-| `payload` | Event-specific JSON data |
+| `event_id` | Уникальный идентификатор события, одинаковый при всех повторах |
+| `trap_ref` | Строковый идентификатор, связывающий событие с настроенной ловушкой |
+| `source_ip` | Адрес клиента, взаимодействовавшего с ловушкой |
+| `timestamp` | Время события в UTC |
+| `event_type` | Тип зафиксированного взаимодействия |
+| `dest_port` | Порт назначения, который видит ловушка |
+| `protocol` | Метка транспортного или прикладного протокола |
+| `payload` | JSON-данные, специфичные для конкретного события |
 
-The production backend is expected to accept `201 Created` for a new event and `200 OK` for a duplicate. Temporary errors such as `429` and `5xx` should be retried. Invalid events and unknown trap references may be rejected permanently. Authentication failures (`401` or `403`) require operator attention.
+Ожидается, что боевой backend отвечает `201 Created` на новое событие и `200 OK` на дубликат. Временные ошибки (`429`, `5xx`) нужно повторять. Некорректные события и неизвестные ссылки на ловушки могут отклоняться окончательно. Ошибки аутентификации (`401` или `403`) требуют внимания оператора.
 
-Confirm the backend implementation and its current contract before connecting a real deployment.
+Перед подключением реального развёртывания уточните реализацию backend и актуальный контракт.
 
-## Security considerations
+## 🔒 Безопасность
 
-- **Use an isolated environment.** Deploy decoys on a dedicated test network or a controlled host.
-- **Limit exposure.** Do not publish trap ports to untrusted networks unless that is an intentional, approved deployment decision.
-- **Protect API credentials.** Do not commit real API keys, passwords, tokens, `.env` files, or local credentials.
-- **Use HTTPS for remote APIs.** Plain HTTP in the mock setup is intended for localhost testing only.
-- **Minimize collected data.** Review event fields and retention policies before collecting traffic from real networks.
-- **Keep runtime data out of Git.** SQLite databases, WAL/SHM files, virtual environments, caches, and logs are local artifacts.
-- **Review container settings.** Read-only filesystems and dropped capabilities help reduce risk but do not make a container or host invulnerable.
-- **Monitor resource use.** Set and review container limits, log retention, disk usage, and queue growth.
-- **Handle credentials carefully.** Restrict access to local configuration and agent logs.
+- 🧱 **Используйте изолированное окружение.** Размещайте приманки в отдельной тестовой сети или на контролируемом хосте.
+- 🚪 **Ограничивайте доступ.** Не публикуйте порты ловушек в недоверенные сети, если это не осознанное и согласованное решение о развёртывании.
+- 🔑 **Защищайте учётные данные API.** Не коммитьте реальные API-ключи, пароли, токены, файлы `.env` и локальные учётные данные.
+- 🔐 **Используйте HTTPS для удалённых API.** Обычный HTTP в конфигурации с mock API предназначен только для localhost.
+- 🧹 **Собирайте минимум данных.** Перед сбором трафика из реальных сетей проверьте поля событий и политики хранения.
+- 🗂️ **Не храните данные выполнения в Git.** Базы SQLite, файлы WAL/SHM, виртуальные окружения, кэши и логи — локальные артефакты.
+- 📦 **Проверяйте настройки контейнеров.** Файловая система только для чтения и сброшенные capabilities снижают риск, но не делают контейнер или хост неуязвимым.
+- 📊 **Следите за ресурсами.** Задавайте и проверяйте лимиты контейнеров, срок хранения логов, использование диска и рост очереди.
+- 👀 **Аккуратно обращайтесь с учётными данными.** Ограничьте доступ к локальной конфигурации и логам агента.
 
-HoneyForge is a defensive research tool. Operate it only on systems and networks you own or are authorized to monitor.
+HoneyForge — оборонительный исследовательский инструмент. Используйте его только в системах и сетях, которыми вы владеете или мониторинг которых вам разрешён.
 
-## C++ backend dependencies
+## 🔧 Зависимости C++ backend
 
-The repository also contains a C++ backend codebase using CMake and PostgreSQL client libraries.
+В репозитории также есть backend-код на C++ с использованием CMake и клиентских библиотек PostgreSQL.
 
-The existing Windows setup notes use `vcpkg` to install `libpqxx`. A typical setup in a Windows developer shell is:
+В существующих заметках по настройке для Windows `libpqxx` устанавливается через `vcpkg`. Типичная последовательность в консоли разработчика Windows:
 
 ```powershell
 git clone https://github.com/microsoft/vcpkg.git
@@ -420,15 +421,15 @@ cd vcpkg
 .\vcpkg integrate install
 ```
 
-Open the solution or CMake project using the development environment configured by the project maintainers. Verify the required compiler, CMake version, PostgreSQL configuration, and library triplet against the current `CMakeLists.txt` and team setup before building.
+Откройте решение или проект CMake в среде разработки, настроенной мейнтейнерами проекта. Перед сборкой сверьте нужный компилятор, версию CMake, конфигурацию PostgreSQL и триплет библиотек с актуальным `CMakeLists.txt` и настройками команды.
 
-The Python traps and Event Agent can be developed independently of the C++ backend. A complete production integration between the Event Agent API contract and the C++ backend is not yet confirmed.
+Ловушки на Python и Event Agent можно разрабатывать независимо от C++ backend. Полная интеграция контракта API Event Agent с C++ backend в боевом режиме пока не подтверждена.
 
-## Troubleshooting
+## 🩺 Устранение неполадок
 
-### The HTTP page does not open
+### 🌐 HTTP-страница не открывается
 
-Check whether the container is running and port `8080` is published:
+Проверьте, что контейнер запущен и порт `8080` опубликован:
 
 ```bash
 docker ps
@@ -436,9 +437,9 @@ docker logs --tail 100 honeyforge-http-001
 curl -v http://127.0.0.1:8080/
 ```
 
-Use the actual container name reported by Docker if it differs.
+Если имя контейнера отличается, используйте имя из вывода Docker.
 
-### The TCP trap does not respond
+### 🔌 TCP-ловушка не отвечает
 
 ```bash
 docker ps
@@ -446,9 +447,9 @@ docker logs --tail 100 trap-001
 nc -vz 127.0.0.1 2222
 ```
 
-Check port publishing, container status, and host firewall rules.
+Проверьте публикацию портов, состояние контейнера и правила файрвола на хосте.
 
-### The agent is not collecting events
+### 🤖 Агент не собирает события
 
 ```bash
 tail -n 100 /tmp/hf-agent.log
@@ -456,56 +457,56 @@ docker logs --since 5m trap-001
 docker logs --since 5m honeyforge-http-001
 ```
 
-Confirm that the agent can access Docker and that the trap emits valid JSON lines containing the fields expected by the collector.
+Убедитесь, что у агента есть доступ к Docker и что ловушка выводит корректные JSON-строки с полями, которые ожидает сборщик.
 
-### The agent cannot deliver events
+### 📭 Агент не может доставить события
 
 ```bash
 tail -n 100 /tmp/hf-agent.log
 tail -n 100 /tmp/hf-mock.log
 ```
 
-Verify the API URL, API key, network connectivity, and accepted `trap_ref` values. For the mock API, use only the development credentials documented in the test setup.
+Проверьте URL API, ключ API, сетевое соединение и допустимые значения `trap_ref`. Для mock API используйте только тестовые учётные данные, описанные в инструкции по тестированию.
 
-### Profile validation fails
+### ✅ Проверка профиля завершается ошибкой
 
 ```bash
 python profile-loader/validate_profile.py --help
 ```
 
-Check the YAML syntax, required fields, and validator usage. Install PyYAML in the active Python environment if the module is missing.
+Проверьте синтаксис YAML, обязательные поля и формат вызова валидатора. Если модуль не найден, установите PyYAML в активное окружение Python.
 
-## Current limitations
+## 🚧 Текущие ограничения
 
-- The TCP decoy presents an SSH-like banner; it is not a full SSH server and does not implement SSH authentication.
-- HTTP inspection is limited to the fields and indicators implemented by the current trap.
-- The mock API is a development aid, not a production service.
-- Successful end-to-end delivery has been verified against the mock API; production backend integration remains to be validated.
-- The C++ backend source exists in the repository, but a complete HTTP ingestion endpoint and production deployment workflow are not documented as working.
-- Operational dashboards, production alerting, and comprehensive attack detection are not included in the currently verified feature set.
+- TCP-приманка показывает SSH-подобный баннер; это не полноценный SSH-сервер, и аутентификация SSH в ней не реализована.
+- HTTP-анализ ограничен полями и индикаторами, реализованными в текущей ловушке.
+- Mock API — вспомогательное средство разработки, а не боевой сервис.
+- Успешная сквозная доставка проверена на mock API; интеграцию с боевым backend ещё предстоит подтвердить.
+- Исходный код C++ backend есть в репозитории, но полноценная HTTP-точка приёма событий и процесс боевого развёртывания не описаны как работающие.
+- Операционные дашборды, боевые оповещения и всестороннее обнаружение атак не входят в проверенный набор возможностей.
 
-## Roadmap
+## 🎯 Дорожная карта
 
-Potential next steps:
+Возможные следующие шаги:
 
-- [ ] Implement and verify the production event ingestion endpoint.
-- [ ] Add integration tests for TCP and HTTP event delivery.
-- [ ] Add automated tests for retry, dead-letter, and authentication-failure paths.
-- [ ] Document backend configuration and database setup.
-- [ ] Add structured health checks and operational metrics.
-- [ ] Define event retention, rotation, and privacy policies.
-- [ ] Add CI checks for Python syntax, profile validation, and container builds.
+- [ ] Реализовать и проверить боевую точку приёма событий.
+- [ ] Добавить интеграционные тесты доставки TCP- и HTTP-событий.
+- [ ] Добавить автотесты для повторных попыток, dead-letter и сценариев ошибок аутентификации.
+- [ ] Описать настройку backend и базы данных.
+- [ ] Добавить структурированные проверки состояния (health checks) и операционные метрики.
+- [ ] Определить политики хранения, ротации событий и конфиденциальности.
+- [ ] Добавить проверки в CI: синтаксис Python, валидация профилей и сборка контейнеров.
 
 ---
 
-## Contributing
+## 🤝 Участие в проекте
 
-1. Create a feature branch.
-2. Keep changes focused and document configuration changes.
-3. Run the relevant validation and smoke tests.
-4. Do not commit secrets, local databases, virtual environments, or generated files.
-5. Open a Pull Request for review before merging into `main`.
+1. Создайте ветку для функциональности.
+2. Делайте изменения узкими по теме и документируйте изменения конфигурации.
+3. Запускайте соответствующие проверки и дымовые тесты.
+4. Не коммитьте секреты, локальные базы данных, виртуальные окружения и сгенерированные файлы.
+5. Перед слиянием в `main` откройте Pull Request на ревью.
 
-## License
+## 📄 Лицензия
 
-No license has been specified in this README. Check the repository's licensing requirements with the maintainers before redistributing the project.
+Лицензия в этом README не указана. Перед распространением проекта уточните требования к лицензированию у мейнтейнеров репозитория.
