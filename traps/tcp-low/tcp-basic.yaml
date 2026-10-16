@@ -1,0 +1,28 @@
+api_version: honeyforge/v1
+
+metadata:
+  name: tcp-basic
+  version: 1
+  description: "TCP Low honeypot with SSH-like banner"
+
+trap:
+  id: trap-001
+  type: tcp_banner
+  level: low
+
+network:
+  protocol: tcp
+  port: 2222
+
+behavior:
+  banner: "SSH-2.0-OpenSSH_8.9p1 Ubuntu-3"
+  response_mode: banner_only
+
+telemetry:
+  log_connections: true
+  log_received_data: true
+
+runtime:
+  read_only_root: true
+  memory_limit_mb: 128
+  restart_policy: unless-stopped

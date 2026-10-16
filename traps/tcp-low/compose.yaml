@@ -1,0 +1,18 @@
+services:
+  trap-001:
+    build: .
+    container_name: trap-001
+    environment:
+      HONEYFORGE_PROFILE: /app/profile.yaml
+    ports:
+      - "2222:2222"
+    volumes:
+      - ../../profiles/tcp-basic.yaml:/app/profile.yaml:ro
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 128m
+    pids_limit: 64
+    restart: unless-stopped

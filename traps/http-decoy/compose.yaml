@@ -1,0 +1,18 @@
+services:
+  http-decoy:
+    build: .
+    container_name: honeyforge-http-001
+    environment:
+      HONEYFORGE_PROFILE: /app/profile.yaml
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../../profiles/http-basic.yaml:/app/profile.yaml:ro
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 128m
+    pids_limit: 64
+    restart: unless-stopped
