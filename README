@@ -1,7 +1,0 @@
-Установка менеджер пакетов VCPKG для libpq
-git clone https://github.com/microsoft/vcpkg.git
-cd vcpkg
-.\bootstrap-vcpkg.bat
-Установка libpqxx через vcpkg
-.\vcpkg install libpqxx
-.\vcpkg integrate install
