@@ -1,0 +1,35 @@
+api_version: honeyforge/v1
+metadata:
+  name: http-basic
+  version: 1
+  description: "HTTP decoy with safe Log4Shell indicator detection"
+
+trap:
+  id: http-001
+  type: http_decoy
+  level: low
+
+network:
+  protocol: tcp
+  port: 8080
+
+behavior:
+  server_banner: "Apache/2.4.57"
+  page_title: "Apache HTTP Server"
+  page_heading: "It works!"
+  suspicious_status: 500
+  normal_status: 200
+  max_body_bytes: 16384
+  read_timeout_seconds: 5
+
+detection:
+  log4shell_indicators: true
+
+telemetry:
+  log_connections: true
+  log_received_data: true
+
+runtime:
+  read_only_root: true
+  memory_limit_mb: 128
+  restart_policy: unless-stopped
